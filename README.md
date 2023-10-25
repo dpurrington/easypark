@@ -1,3 +1,5 @@
+![build status](https://github.com/github/docs/actions/workflows/firebase-hosting-merge.yml/badge.svg)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
