@@ -3,12 +3,12 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import DataGridDemo from "./ListSessions";
+import SessionsList from "./SessionsList";
 
 function App() {
   return (
     <div className="App">
-      <DataGridDemo />
+      <SessionsList />
     </div>
   );
 }
