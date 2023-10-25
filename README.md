@@ -1,4 +1,4 @@
-![build status](https://github.com/github/docs/actions/workflows/firebase-hosting-merge.yml/badge.svg)
+![build status](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-merge.yml/badge.svg)
 
 # Getting Started with Create React App
 
