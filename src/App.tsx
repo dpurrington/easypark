@@ -4,12 +4,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-// I'm thinking there's a way to pull all these in with one go.
-import Root from "./routes/Root";
-import Sessions from "./routes/Sessions";
-import CreateSession from "./routes/CreateSession";
-import EndSession from "./routes/EndSession";
-
+import { Root, Sessions, CreateSession, EndSession } from "./routes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 let router = createBrowserRouter([
