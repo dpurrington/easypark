@@ -25,7 +25,7 @@ const columns: GridColDef[] = [
     editable: true,
   },
   {
-    field: "entry",
+    field: "enter",
     headerName: "Entered",
     sortable: false,
     width: 160,

@@ -1,11 +1,22 @@
 import { TextField, Button, Box } from "@mui/material";
 import { useState } from "react";
+import { newSession, createSession } from "./data/sessions";
 
 interface SessionCreatorState {
   plate: string;
   phone: string;
   phoneProps: { error: boolean };
   plateProps: { error: boolean };
+  valid: boolean;
+}
+
+function validateState(state: SessionCreatorState) {
+  const retval = structuredClone(state);
+  // verify only digits
+  retval.phoneProps.error = !state.phone.match("^\\d*$");
+
+  retval.valid = !(retval.phoneProps.error || retval.plateProps.error);
+  return retval;
 }
 
 export default function SessionCreator(this: React.Component) {
@@ -14,17 +25,18 @@ export default function SessionCreator(this: React.Component) {
     plateProps: { error: false },
     plate: "",
     phone: "",
+    valid: true,
   };
   const [state, setState] = useState(initialState);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log(state);
-    if (state.phone.match(".*")) {
-      setState((oldValues: SessionCreatorState) => ({
-        ...oldValues,
-        phoneProps: { error: true },
-      }));
+    setState(validateState(state));
+
+    if (state.valid) {
+      // create session (could fail due to existing session)
+      createSession(newSession(state.plate, state.phone));
     }
 
     console.log("handled submit");
@@ -32,10 +44,12 @@ export default function SessionCreator(this: React.Component) {
 
   const set: any = (name: string) => {
     return ({ target: { value } }: any) => {
-      setState((oldValues: SessionCreatorState) => ({
-        ...oldValues,
-        [name]: value,
-      }));
+      setState((oldValues: SessionCreatorState) =>
+        validateState({
+          ...oldValues,
+          [name]: value,
+        })
+      );
     };
   };
 
