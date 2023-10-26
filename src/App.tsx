@@ -3,16 +3,33 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
-import SessionsList from "./SessionsList";
-import SessionCreator from "./SessionCreator";
 
-function App() {
+import { Root, Sessions, CreateSession, EndSession } from "./routes";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+let router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Root />,
+  },
+  {
+    path: "/newSession",
+    element: <CreateSession />,
+  },
+  {
+    path: "/sessions",
+    element: <Sessions />,
+  },
+  {
+    path: "/endSession",
+    element: <EndSession />,
+  },
+]);
+
+export default function App() {
   return (
     <div className="App">
-      <SessionsList />
-      <SessionCreator />
+      <RouterProvider router={router} fallbackElement={<p>Loading...</p>} />;
     </div>
   );
 }
-
-export default App;

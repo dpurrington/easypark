@@ -12,7 +12,7 @@ export interface Session {
   plate: string;
   phone: string;
   enter: string;
-  exit: string;
+  exit?: string;
   status: SessionStatus;
 }
 
@@ -23,7 +23,6 @@ export function newSession(
   plate: string,
   phone: string,
   enter: string = new Date(Date.now()).toISOString(),
-  exit: string = "",
   status: SessionStatus = SessionStatus.Active
 ) {
   return {
@@ -31,7 +30,6 @@ export function newSession(
     plate: plate,
     phone: phone,
     enter: enter,
-    exit: exit,
     status: status,
   };
 }
