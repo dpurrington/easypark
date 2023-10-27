@@ -10,7 +10,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 let router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <CreateSession />,
   },
   {
     path: "/createSession",

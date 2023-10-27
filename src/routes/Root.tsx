@@ -3,7 +3,7 @@ export default function Root() {
   return (
     <div>
       <SessionsList />
-      <Navigation />
+      <Navigation value="createSession" />
     </div>
   );
 }

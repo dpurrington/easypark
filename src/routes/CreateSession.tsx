@@ -4,7 +4,7 @@ export default function Root() {
   return (
     <>
       <SessionCreator />
-      <Navigation />
+      <Navigation value="createSession" />
     </>
   );
 }

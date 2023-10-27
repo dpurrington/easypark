@@ -6,7 +6,7 @@ export default function Root() {
       <div id="detail">
         <SessionsList />
       </div>
-      <Navigation />
+      <Navigation value="sessions" />
     </>
   );
 }

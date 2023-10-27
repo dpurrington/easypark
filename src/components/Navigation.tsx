@@ -2,8 +2,11 @@ import * as React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 
-export default function Navigation() {
-  const [value, setValue] = React.useState("createSession");
+interface NavValue {
+  value: string;
+}
+export default function Navigation(props: NavValue) {
+  const [value, setValue] = React.useState(props.value);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -26,11 +29,7 @@ export default function Navigation() {
         value="endSession"
         href="/endSession"
       />
-      <BottomNavigationAction
-        label="Admin"
-        value="listSessions"
-        href="/sessions"
-      />
+      <BottomNavigationAction label="Admin" value="sessions" href="/sessions" />
     </BottomNavigation>
   );
 }
