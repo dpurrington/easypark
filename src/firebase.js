@@ -1,20 +1,15 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_apiKey,
-  authDomain: process.env.REACT_APP_authDomain,
-  databaseURL: process.env.REACT_APP_databaseURL,
-  projectId: process.env.REACT_APP_projectId,
-  storageBucket: process.env.REACT_APP_storageBucket,
-  messagingSenderId: process.env.REACT_APP_messagingSenderId,
-  appId: process.env.REACT_APP_appId,
-  measurementId: process.env.REACT_APP_measurementId,
+  apiKey: "AIzaSyCB_c4zDyeIAynbTbJxMjnSl3TQ9aiDFPw",
+  authDomain: "easypark-5e3b6.firebaseapp.com",
+  databaseURL: "https://easypark-5e3b6-default-rtdb.firebaseio.com",
+  projectId: "easypark-5e3b6",
+  storageBucket: "easypark-5e3b6.appspot.com",
+  messagingSenderId: "940781219307",
+  appId: "1:940781219307:web:791178a252752501aa7dae",
+  measurementId: "G-26Q2V5SGXE",
 };
 
 // Initialize Firebase
