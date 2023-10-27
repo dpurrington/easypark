@@ -1,10 +1,13 @@
 import Navigation from "../components/Navigation";
 import SessionCreator from "../components/SessionCreator";
-export default function Root() {
+import { Container, Box } from "@mui/material";
+export default function CreateSession() {
   return (
-    <>
-      <SessionCreator />
+    <Container maxWidth="sm">
+      <Box sx={{ minHeight: 800 }}>
+        <SessionCreator />
+      </Box>
       <Navigation value="createSession" />
-    </>
+    </Container>
   );
 }

@@ -1,8 +1,10 @@
 import { Navigation } from "../components";
-export default function Root() {
+import { Container, Box } from "@mui/material";
+export default function EndSession() {
   return (
-    <div>
+    <Container maxWidth="sm">
+      <Box sx={{ minHeight: 800 }}></Box>
       <Navigation value="endSession" />
-    </div>
+    </Container>
   );
 }
