@@ -15,7 +15,7 @@ export default function Navigation(props: NavValue) {
   return (
     <BottomNavigation
       showLabels
-      sx={{ width: 500 }}
+      sx={{ width: 852 }}
       value={value}
       onChange={handleChange}
     >

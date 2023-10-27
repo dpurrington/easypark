@@ -4,12 +4,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import {
-  Sessions,
-  CreateSession,
-  EndSession,
-  NewSessionSuccess,
-} from "./routes";
+import { Sessions, CreateSession, EndSession } from "./routes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 let router = createBrowserRouter([
@@ -20,10 +15,6 @@ let router = createBrowserRouter([
   {
     path: "/createSession",
     element: <CreateSession />,
-  },
-  {
-    path: "/sessionCreated",
-    element: <NewSessionSuccess />,
   },
   {
     path: "/sessions",

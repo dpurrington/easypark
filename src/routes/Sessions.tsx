@@ -3,7 +3,7 @@ import { Container, Box } from "@mui/material";
 
 export default function Sessions() {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box sx={{ minHeight: 800 }}>
         <div id="detail">
           <SessionsList />

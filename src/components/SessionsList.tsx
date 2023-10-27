@@ -1,45 +1,53 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import {
+  GridToolbarContainer,
+  GridToolbarExport,
+  DataGrid,
+  GridColDef,
+} from "@mui/x-data-grid";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { app } from "../firebase";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
   {
     field: "plate",
     headerName: "Plate",
     width: 150,
-    editable: true,
   },
   {
     field: "phone",
-    headerName: "Tel",
+    headerName: "Phone",
     width: 150,
-    editable: true,
   },
   {
     field: "status",
     headerName: "Status",
     width: 110,
-    editable: true,
   },
   {
     field: "enter",
     headerName: "Entered",
-    sortable: false,
+    sortable: true,
     width: 160,
   },
   {
     field: "exit",
     headerName: "Exited",
-    sortable: false,
+    sortable: true,
     width: 160,
   },
 ];
 
 const db = getDatabase(app);
 const sessionRef = ref(db, "sessions");
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 
 export default function SessionsList() {
   const [sessions, setSessions] = React.useState([]);
@@ -52,19 +60,29 @@ export default function SessionsList() {
   }, []);
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{ maxHeight: 800, width: "100%" }}>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <h1>Sessions</h1>
+      </Box>
       <DataGrid
+        slots={{
+          toolbar: CustomToolbar,
+        }}
         rows={sessions}
         columns={columns}
         initialState={{
+          filter: {
+            filterModel: {
+              items: [{ field: "status", operator: "equals", value: "active" }],
+            },
+          },
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 10,
             },
           },
         }}
         pageSizeOptions={[5]}
-        checkboxSelection
         disableRowSelectionOnClick
       />
     </Box>
