@@ -13,7 +13,7 @@ let router = createBrowserRouter([
     element: <Root />,
   },
   {
-    path: "/newSession",
+    path: "/createSession",
     element: <CreateSession />,
   },
   {

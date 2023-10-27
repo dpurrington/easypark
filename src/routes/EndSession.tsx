@@ -1,9 +1,8 @@
-import Sidebar from "../Sidebar";
+import Navigation from "../Navigation";
 export default function Root() {
   return (
     <div>
-      <Sidebar />
-      <div id="detail"></div>
+      <Navigation />
     </div>
   );
 }

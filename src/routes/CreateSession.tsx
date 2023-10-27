@@ -1,12 +1,10 @@
-import Sidebar from "../Sidebar";
+import Navigation from "../Navigation";
 import SessionCreator from "../SessionCreator";
 export default function Root() {
   return (
     <>
-      <Sidebar />
-      <div id="detail">
-        <SessionCreator />
-      </div>
+      <SessionCreator />
+      <Navigation />
     </>
   );
 }
