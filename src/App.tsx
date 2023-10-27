@@ -7,6 +7,8 @@ import "@fontsource/roboto/700.css";
 import { Sessions, CreateSession, EndSession } from "./routes";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+// these are all the routes in the app -- the navigation component will take the user from one view to the next
+// using these routes
 let router = createBrowserRouter([
   {
     path: "/",

@@ -8,14 +8,6 @@ interface SessionEnderState {
   submitError?: string;
 }
 
-function validateState(state: SessionEnderState) {
-  const retval = structuredClone(state);
-  // TODO: add validation
-  // retval.valid = retval.plate.length > 0;
-  retval.valid = true;
-  return retval;
-}
-
 export default function SessionEnder(this: React.Component) {
   const initialState: SessionEnderState = {
     plate: "",
@@ -41,17 +33,15 @@ export default function SessionEnder(this: React.Component) {
         setState(initialState);
       }
     }
-
-    console.log("handled submit");
   };
 
   const set: any = (name: string) => {
     return ({ target: { value } }: any) => {
       setState((oldValues: SessionEnderState) => {
-        return validateState({
+        return {
           ...oldValues,
           [name]: value,
-        });
+        };
       });
     };
   };
@@ -83,7 +73,6 @@ export default function SessionEnder(this: React.Component) {
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={resetSnackbars}
-        message="You are checked in. Please enjoy your stay with us!"
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert severity="success">

@@ -21,6 +21,7 @@ export interface Session {
   status: SessionStatus;
 }
 
+// TODO: might make sense to move this to db.ts
 const db = getDatabase(app);
 
 export function newSession(
@@ -49,7 +50,7 @@ export async function createSession(session: Session): Promise<DbResult> {
     return {
       success: false,
       // TODO: this string is going right to the UI, but this is the wrong
-      // place for that logic. Need a layer of indirection and translation.
+      // place for that logic. Need a layer (domain layer, actually) of indirection and translation.
       error: "Open session already exists for this vehicle.",
     };
   }
