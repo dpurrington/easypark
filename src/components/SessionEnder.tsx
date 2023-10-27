@@ -1,11 +1,11 @@
-import { TextField, Button, Box } from "@mui/material";
+import { Snackbar, Alert, TextField, Button, Box } from "@mui/material";
 import { useState } from "react";
 import { endSession } from "../data/sessions";
 
 interface SessionEnderState {
   plate: string;
   valid: boolean;
-  error?: string;
+  submitError?: string;
 }
 
 function validateState(state: SessionEnderState) {
@@ -22,6 +22,8 @@ export default function SessionEnder(this: React.Component) {
     valid: false,
   };
   const [state, setState] = useState(initialState);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +34,10 @@ export default function SessionEnder(this: React.Component) {
       const { success, error } = await endSession(state.plate);
       if (!success) {
         console.log(error);
-        setState({ ...state, valid: false, error: error });
+        setOpenErrorSnackbar(true);
+        setState({ ...state, valid: false, submitError: error });
       } else {
+        setOpenSnackbar(true);
         setState(initialState);
       }
     }
@@ -52,17 +56,41 @@ export default function SessionEnder(this: React.Component) {
     };
   };
 
+  const resetSnackbars = () => {
+    setOpenSnackbar(false);
+    setOpenErrorSnackbar(false);
+  };
+
   return (
     <Box
       component="form"
-      sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
-      }}
       autoComplete="off"
       onSubmit={handleSubmit}
+      justifyContent="space-between"
     >
-      <h1>End Session</h1>
-      <div className="session-ender">
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <h1>Parking Checkout</h1>
+      </Box>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={resetSnackbars}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="error">{state.submitError}</Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={resetSnackbars}
+        message="You are checked in. Please enjoy your stay with us!"
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success">
+          Checkout complete! We hope you enjoyed your stay with us.
+        </Alert>
+      </Snackbar>
+      <Box display="flex" justifyContent="center">
         <TextField
           required
           id="plate"
@@ -70,6 +98,8 @@ export default function SessionEnder(this: React.Component) {
           value={state.plate}
           onChange={set("plate")}
         />
+      </Box>
+      <Box display="flex" justifyContent="center" alignItems="center">
         <Button
           disabled={!state.valid || !state.plate}
           variant="contained"
@@ -78,7 +108,7 @@ export default function SessionEnder(this: React.Component) {
         >
           End Session
         </Button>
-      </div>
+      </Box>
     </Box>
   );
 }

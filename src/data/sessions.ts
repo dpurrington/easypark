@@ -40,6 +40,20 @@ export function newSession(
 
 // create session
 export async function createSession(session: Session): Promise<DbResult> {
+  const sessionInDb: Session | undefined = getOpenSession(
+    session.plate,
+    await getSessions()
+  );
+  // open session found
+  if (sessionInDb !== undefined) {
+    return {
+      success: false,
+      // TODO: this string is going right to the UI, but this is the wrong
+      // place for that logic. Need a layer of indirection and translation.
+      error: "Open session already exists for this vehicle.",
+    };
+  }
+
   // TODO: change this to use push
   // https://firebase.google.com/docs/database/web/read-and-write#update_specific_fields
   return set(ref(db, "sessions/" + session.id), { ...session })

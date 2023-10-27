@@ -1,7 +1,6 @@
-import { Alert, Collapse, TextField, Button, Box } from "@mui/material";
+import { Alert, Snackbar, TextField, Button, Box } from "@mui/material";
 import { useState } from "react";
 import { newSession, createSession } from "../data/sessions";
-import { useNavigate } from "react-router-dom";
 
 interface SessionCreatorState {
   plate: string;
@@ -30,12 +29,12 @@ const initialState: SessionCreatorState = {
   plate: "",
   phone: "",
   valid: true,
-  submitError: "",
 };
 
 export default function SessionCreator() {
   const [state, setState] = useState(initialState);
-  const navigate = useNavigate();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,8 +48,9 @@ export default function SessionCreator() {
       );
 
       if (success) {
-        navigate("/sessionCreated");
+        setOpenSnackbar(true);
       } else {
+        setOpenErrorSnackbar(true);
         setState({ ...state, submitError: error });
       }
     }
@@ -67,6 +67,11 @@ export default function SessionCreator() {
     };
   };
 
+  const resetSnackbars = () => {
+    setOpenSnackbar(false);
+    setOpenErrorSnackbar(false);
+  };
+
   return (
     <Box
       component="form"
@@ -76,11 +81,27 @@ export default function SessionCreator() {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <h1>Parking Check-in</h1>
-      <Collapse in={state.submitError !== null}>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <h1>Parking Check-in</h1>
+      </Box>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={6000}
+        onClose={resetSnackbars}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
         <Alert severity="error">{state.submitError}</Alert>
-      </Collapse>
-      <div className="session-creator">
+      </Snackbar>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={resetSnackbars}
+        message="Checkout complete! We hope you enjoyed your stay with us."
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="error">{state.submitError}</Alert>
+      </Snackbar>
+      <Box display="flex" justifyContent="center" alignItems="space-between">
         <TextField
           {...state.plateProps}
           required
@@ -98,6 +119,8 @@ export default function SessionCreator() {
           value={state.phone}
           onChange={set("phone")}
         />
+      </Box>
+      <Box display="flex" justifyContent="center" alignItems="center">
         <Button
           disabled={!state.valid || !state.phone || !state.plate}
           variant="contained"
@@ -106,7 +129,7 @@ export default function SessionCreator() {
         >
           Begin Session
         </Button>
-      </div>
+      </Box>
     </Box>
   );
 }

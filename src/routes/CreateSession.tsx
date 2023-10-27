@@ -3,7 +3,7 @@ import SessionCreator from "../components/SessionCreator";
 import { Container, Box } from "@mui/material";
 export default function CreateSession() {
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box sx={{ minHeight: 800 }}>
         <SessionCreator />
       </Box>
