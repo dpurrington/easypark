@@ -39,11 +39,16 @@ export function newSession(
 }
 
 // create session
-export function createSession(session: Session) {
-  console.log("creating session");
+export async function createSession(session: Session): Promise<DbResult> {
   // TODO: change this to use push
   // https://firebase.google.com/docs/database/web/read-and-write#update_specific_fields
-  set(ref(db, "sessions/" + session.id), { ...session });
+  return set(ref(db, "sessions/" + session.id), { ...session })
+    .then(() => {
+      return { success: true };
+    })
+    .catch((err) => {
+      return { success: false, error: err };
+    });
 }
 
 function getOpenSession(
