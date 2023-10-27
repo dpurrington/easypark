@@ -1,5 +1,5 @@
-import Navigation from "../Navigation";
-import SessionsList from "../SessionsList";
+import { Navigation, SessionsList } from "../components";
+
 export default function Root() {
   return (
     <>

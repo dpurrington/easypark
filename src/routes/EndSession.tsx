@@ -1,4 +1,4 @@
-import Navigation from "../Navigation";
+import { Navigation } from "../components";
 export default function Root() {
   return (
     <div>

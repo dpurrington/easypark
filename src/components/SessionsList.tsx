@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { app } from "./firebase";
+import { app } from "../firebase";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
