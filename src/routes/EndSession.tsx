@@ -1,9 +1,10 @@
-import Sidebar from "../Sidebar";
-export default function Root() {
+import { Navigation } from "../components";
+import { Container, Box } from "@mui/material";
+export default function EndSession() {
   return (
-    <div>
-      <Sidebar />
-      <div id="detail"></div>
-    </div>
+    <Container maxWidth="sm">
+      <Box sx={{ minHeight: 800 }}></Box>
+      <Navigation value="endSession" />
+    </Container>
   );
 }

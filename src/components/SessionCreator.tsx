@@ -1,6 +1,6 @@
 import { TextField, Button, Box } from "@mui/material";
 import { useState } from "react";
-import { newSession, createSession } from "./data/sessions";
+import { newSession, createSession } from "../data/sessions";
 
 interface SessionCreatorState {
   plate: string;

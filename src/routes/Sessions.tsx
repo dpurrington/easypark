@@ -1,12 +1,15 @@
-import Sidebar from "../Sidebar";
-import SessionsList from "../SessionsList";
-export default function Root() {
+import { Navigation, SessionsList } from "../components";
+import { Container, Box } from "@mui/material";
+
+export default function Sessions() {
   return (
-    <>
-      <Sidebar />
-      <div id="detail">
-        <SessionsList />
-      </div>
-    </>
+    <Container maxWidth="sm">
+      <Box sx={{ minHeight: 800 }}>
+        <div id="detail">
+          <SessionsList />
+        </div>
+      </Box>
+      <Navigation value="sessions" />
+    </Container>
   );
 }
