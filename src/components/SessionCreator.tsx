@@ -11,9 +11,11 @@ interface SessionCreatorState {
   submitError?: string;
 }
 
+// this function is used to validate input prior to submission
 const validateFormState = (state: SessionCreatorState) => {
-  // this function is used to validate input prior to submission
+  // make a deep copy - we want to return a new object, not product side-effects
   const retval = structuredClone(state);
+
   // verify only digits and at least 10 digits
   retval.phoneProps.error =
     !state.phone.match("^\\d*$") || state.phone.length < 10;
@@ -33,12 +35,11 @@ const initialState: SessionCreatorState = {
 
 export default function SessionCreator() {
   const [state, setState] = useState(initialState);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [openSuccessSnackbar, setOpenSuccessSnackbar] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(state);
     setState(validateFormState(state));
 
     if (state.valid) {
@@ -48,7 +49,7 @@ export default function SessionCreator() {
       );
 
       if (success) {
-        setOpenSnackbar(true);
+        setOpenSuccessSnackbar(true);
       } else {
         setOpenErrorSnackbar(true);
         setState({ ...state, submitError: error });
@@ -56,6 +57,8 @@ export default function SessionCreator() {
     }
   };
 
+  // updates any value passed in and updates
+  // the state
   const set: any = (name: string) => {
     return ({ target: { value } }: any) => {
       setState((oldValues: SessionCreatorState) =>
@@ -67,8 +70,9 @@ export default function SessionCreator() {
     };
   };
 
+  // closes the snackbars (so we don't try to open again)
   const resetSnackbars = () => {
-    setOpenSnackbar(false);
+    setOpenSuccessSnackbar(false);
     setOpenErrorSnackbar(false);
   };
 
@@ -93,13 +97,14 @@ export default function SessionCreator() {
         <Alert severity="error">{state.submitError}</Alert>
       </Snackbar>
       <Snackbar
-        open={openSnackbar}
+        open={openSuccessSnackbar}
         autoHideDuration={6000}
         onClose={resetSnackbars}
-        message="Checkout complete! We hope you enjoyed your stay with us."
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="error">{state.submitError}</Alert>
+        <Alert severity="success">
+          Check-in complete. Please enjoy your stay!
+        </Alert>
       </Snackbar>
       <Box display="flex" justifyContent="center" alignItems="space-between">
         <TextField
@@ -127,7 +132,7 @@ export default function SessionCreator() {
           color="success"
           type="submit"
         >
-          Begin Session
+          Check In
         </Button>
       </Box>
     </Box>

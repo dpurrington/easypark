@@ -1,5 +1,6 @@
 import { Navigation, SessionEnder } from "../components";
 import { Container, Box } from "@mui/material";
+
 export default function EndSession() {
   return (
     <Container maxWidth="md">

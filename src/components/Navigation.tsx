@@ -5,6 +5,8 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 interface NavValue {
   value: string;
 }
+
+// this is the common navigation component shown on all views
 export default function Navigation(props: NavValue) {
   const [value, setValue] = React.useState(props.value);
 
