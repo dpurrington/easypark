@@ -94,7 +94,12 @@ export default function SessionEnder(this: React.Component) {
           onChange={set("plate")}
         />
       </Box>
-      <Box display="flex" justifyContent="center" alignItems="center">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ paddingTop: 3 }}
+      >
         <Button
           disabled={!state.valid || !state.plate}
           variant="contained"

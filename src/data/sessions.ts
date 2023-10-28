@@ -21,7 +21,6 @@ export interface SessionCollection {
   [key: string]: Session;
 }
 
-// TODO: change this to a class and use class-validator
 export interface Session {
   id: string;
   plate: string;
@@ -82,7 +81,6 @@ async function getOpenSession(
   return querySnapshot.size === 0 ? undefined : querySnapshot.docs[0];
 }
 
-// end session
 export async function endSession(plate: string): Promise<DbResult> {
   try {
     const session: DocumentData | undefined = await getOpenSession(plate);

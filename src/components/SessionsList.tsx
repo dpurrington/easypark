@@ -8,11 +8,20 @@ import {
 } from "@mui/x-data-grid";
 import { subscribeToUpdates } from "../data/sessions";
 
+const timestampDisplay = (params: any) => {
+  if (!params.value) {
+    return params.value;
+  }
+  return params.value.toDate().toLocaleString();
+};
+
+const dateWidth = 200;
+
 const columns: GridColDef[] = [
   {
     field: "plate",
     headerName: "Plate",
-    width: 150,
+    width: 100,
   },
   {
     field: "phone",
@@ -28,13 +37,15 @@ const columns: GridColDef[] = [
     field: "enter",
     headerName: "Entered",
     sortable: true,
-    width: 160,
+    width: dateWidth,
+    valueGetter: timestampDisplay,
   },
   {
     field: "exit",
     headerName: "Exited",
     sortable: true,
-    width: 160,
+    width: dateWidth,
+    valueGetter: timestampDisplay,
   },
 ];
 
