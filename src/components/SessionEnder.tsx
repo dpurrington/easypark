@@ -35,13 +35,19 @@ export default function SessionEnder(this: React.Component) {
     }
   };
 
+  const validateState = (newState: SessionEnderState) => {
+    const retval = structuredClone(newState);
+    retval.valid = retval.plate.length > 0;
+    return retval;
+  };
+
   const set: any = (name: string) => {
     return ({ target: { value } }: any) => {
       setState((oldValues: SessionEnderState) => {
-        return {
+        return validateState({
           ...oldValues,
           [name]: value,
-        };
+        });
       });
     };
   };

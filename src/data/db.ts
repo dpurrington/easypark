@@ -1,5 +1,11 @@
-// not much going on here yet, but this interface will be shared across multiple data access types
+import { app } from "../firebase";
+import { getFirestore } from "firebase/firestore";
+
 export interface DbResult {
   success: boolean;
   error?: string;
 }
+
+export const SuccessResult: DbResult = { success: true };
+
+export const db = getFirestore(app);

@@ -6,8 +6,7 @@ import {
   DataGrid,
   GridColDef,
 } from "@mui/x-data-grid";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { app } from "../firebase";
+import { subscribeToUpdates } from "../data/sessions";
 
 const columns: GridColDef[] = [
   {
@@ -39,8 +38,6 @@ const columns: GridColDef[] = [
   },
 ];
 
-const db = getDatabase(app);
-const sessionRef = ref(db, "sessions");
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -52,10 +49,13 @@ function CustomToolbar() {
 export default function SessionsList() {
   const [sessions, setSessions] = React.useState([]);
   React.useEffect(() => {
-    onValue(sessionRef, (snapshot) => {
-      const data: any = snapshot.val();
-      console.log(data);
-      setSessions(Object.values(data));
+    subscribeToUpdates((snapshot: any) => {
+      const sessions: any = [];
+      snapshot.forEach((doc: any) => {
+        sessions.push(doc.data());
+      });
+
+      setSessions(sessions);
     });
   }, []);
 
@@ -82,7 +82,7 @@ export default function SessionsList() {
             },
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[10]}
         disableRowSelectionOnClick
       />
     </Box>

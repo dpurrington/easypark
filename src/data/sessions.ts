@@ -1,7 +1,16 @@
-import { DbResult } from "./db";
-import { update, getDatabase, ref, set, get } from "firebase/database";
-import { app } from "../firebase";
+import { DbResult, SuccessResult, db } from "./db";
 import { v4 as uuidv4 } from "uuid";
+import {
+  query,
+  where,
+  addDoc,
+  updateDoc,
+  getDocs,
+  serverTimestamp,
+  collection,
+  onSnapshot,
+  DocumentData,
+} from "firebase/firestore";
 
 export enum SessionStatus {
   Active = "active",
@@ -12,102 +21,88 @@ export interface SessionCollection {
   [key: string]: Session;
 }
 
+// TODO: change this to a class and use class-validator
 export interface Session {
   id: string;
   plate: string;
   phone: string;
-  enter: string;
-  exit?: string;
+  enter?: Date;
+  exit?: Date;
   status: SessionStatus;
 }
-
-// TODO: might make sense to move this to db.ts
-const db = getDatabase(app);
 
 export function newSession(
   plate: string,
   phone: string,
-  enter: string = new Date(Date.now()).toISOString(),
   status: SessionStatus = SessionStatus.Active
-) {
+): Session {
   return {
     id: uuidv4(),
     plate: plate,
     phone: phone,
-    enter: enter,
     status: status,
   };
 }
 
-// create session
 export async function createSession(session: Session): Promise<DbResult> {
-  const sessionInDb: Session | undefined = getOpenSession(
-    session.plate,
-    await getSessions()
-  );
-  // open session found
-  if (sessionInDb !== undefined) {
+  // TODO: there is a race condition here.
+  // Need to use a transaction where we read a snapshot
+  // and create the new doc within the transaction.
+  if ((await getOpenSession(session.plate)) !== undefined) {
     return {
       success: false,
-      // TODO: this string is going right to the UI, but this is the wrong
-      // place for that logic. Need a layer (domain layer, actually) of indirection and translation.
-      error: "Open session already exists for this vehicle.",
+      error: "Cannot create a new open session. One already exists.",
     };
   }
 
-  // TODO: change this to use push
-  // https://firebase.google.com/docs/database/web/read-and-write#update_specific_fields
-  return set(ref(db, "sessions/" + session.id), { ...session })
-    .then(() => {
-      return { success: true };
-    })
-    .catch((err) => {
-      return { success: false, error: err };
+  try {
+    await addDoc(collection(db, "sessions"), {
+      ...session,
+      enter: serverTimestamp(),
     });
+    return SuccessResult;
+  } catch (e: any) {
+    return { success: false, error: e.toString() };
+  }
 }
 
-function getOpenSession(
-  plate: string,
-  sessions: SessionCollection
-): Session | undefined {
-  return Object.values(sessions).find(
-    (session: Session) =>
-      session.plate === plate && session.status === SessionStatus.Active
+async function getOpenSession(
+  plate: string
+): Promise<DocumentData | undefined> {
+  console.log("Getting open session for " + plate);
+  const sessionsRef = collection(db, "sessions");
+
+  const q = query(
+    sessionsRef,
+    where("plate", "==", plate),
+    where("status", "==", SessionStatus.Active)
   );
-}
 
-async function getSessions(): Promise<SessionCollection> {
-  return get(ref(db, "sessions")).then((snapshot) => {
-    return snapshot.exists() ? snapshot.val() : {};
-  });
-}
-
-async function updateSession(session: Session): Promise<DbResult> {
-  return update(ref(db, `sessions/${session.id}`), session)
-    .then(() => {
-      return { success: true };
-    })
-    .catch((message: string) => {
-      return { success: false, message };
-    });
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.size === 0 ? undefined : querySnapshot.docs[0];
 }
 
 // end session
 export async function endSession(plate: string): Promise<DbResult> {
-  const session: Session | undefined = getOpenSession(
-    plate,
-    await getSessions()
-  );
-  // no open session
-  if (session === undefined) {
-    return { success: false, error: "no open session found" };
-  }
+  try {
+    const session: DocumentData | undefined = await getOpenSession(plate);
+    if (!session) {
+      console.log(session);
+      return { success: false, error: "No active sessions for this vehicle" };
+    }
 
-  // TODO: note at this point we are hoping no one else tries to end it before
-  // we can update it (race condition).
-  return updateSession({
-    ...session,
-    status: SessionStatus.Inactive,
-    exit: new Date(Date.now()).toISOString(),
-  });
+    await updateDoc(session.ref, {
+      status: SessionStatus.Inactive,
+      exit: serverTimestamp(),
+    });
+    return SuccessResult;
+  } catch (e) {
+    console.log(`Error updating session: ${e}`);
+    return { success: false, error: "Database error." };
+  }
+}
+
+export function subscribeToUpdates(handler: any): void {
+  const collectionRef = collection(db, "sessions");
+  onSnapshot(query(collectionRef), handler);
 }
