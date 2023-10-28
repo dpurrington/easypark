@@ -6,14 +6,22 @@ import {
   DataGrid,
   GridColDef,
 } from "@mui/x-data-grid";
-import { getDatabase, ref, onValue } from "firebase/database";
-import { app } from "../firebase";
+import { subscribeToUpdates } from "../data/sessions";
+
+const timestampDisplay = (params: any) => {
+  if (!params.value) {
+    return params.value;
+  }
+  return params.value.toDate().toLocaleString();
+};
+
+const dateWidth = 200;
 
 const columns: GridColDef[] = [
   {
     field: "plate",
     headerName: "Plate",
-    width: 150,
+    width: 100,
   },
   {
     field: "phone",
@@ -29,18 +37,18 @@ const columns: GridColDef[] = [
     field: "enter",
     headerName: "Entered",
     sortable: true,
-    width: 160,
+    width: dateWidth,
+    valueGetter: timestampDisplay,
   },
   {
     field: "exit",
     headerName: "Exited",
     sortable: true,
-    width: 160,
+    width: dateWidth,
+    valueGetter: timestampDisplay,
   },
 ];
 
-const db = getDatabase(app);
-const sessionRef = ref(db, "sessions");
 function CustomToolbar() {
   return (
     <GridToolbarContainer>
@@ -52,10 +60,13 @@ function CustomToolbar() {
 export default function SessionsList() {
   const [sessions, setSessions] = React.useState([]);
   React.useEffect(() => {
-    onValue(sessionRef, (snapshot) => {
-      const data: any = snapshot.val();
-      console.log(data);
-      setSessions(Object.values(data));
+    subscribeToUpdates((snapshot: any) => {
+      const sessions: any = [];
+      snapshot.forEach((doc: any) => {
+        sessions.push(doc.data());
+      });
+
+      setSessions(sessions);
     });
   }, []);
 
@@ -82,7 +93,7 @@ export default function SessionsList() {
             },
           },
         }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[10]}
         disableRowSelectionOnClick
       />
     </Box>

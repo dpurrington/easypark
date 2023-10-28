@@ -50,6 +50,7 @@ export default function SessionCreator() {
 
       if (success) {
         setOpenSuccessSnackbar(true);
+        setState(initialState);
       } else {
         setOpenErrorSnackbar(true);
         setState({ ...state, submitError: error });
