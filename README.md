@@ -59,7 +59,7 @@ _Much of the layout is prescribed by `create-react-app`._
   - [`./src/routes`](./src/routes) -- route controllers
   - [`./src/data`](./src/data) -- data store interactions and data object creation
   - [`./src/components`](./src/components) -- React components
-- Static files (e.g., `favicon.ico`) -- [`./pub`](./pub) directory
+- Static files (e.g., `favicon.ico`) -- [`./public`](./public) directory
 
 ## Various implementation choices
 
