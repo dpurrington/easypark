@@ -115,6 +115,7 @@ export default function SessionCreator() {
           label="Plate"
           value={state.plate}
           onChange={set("plate")}
+          autoFocus
         />
         <TextField
           helperText="Please provide a minimum of ten digits (and digits only)."

@@ -87,6 +87,7 @@ export default function SessionEnder(this: React.Component) {
       </Snackbar>
       <Box display="flex" justifyContent="center">
         <TextField
+          autoFocus
           required
           id="plate"
           label="Plate"
