@@ -1,5 +1,7 @@
 ![build status](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-merge.yml/badge.svg)
 
+_Note: For security reasons, database access is currently disabled._
+
 - [Production Application](https://easypark-5e3b6.web.app/)
 - [Production CD jobs](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-merge.yml)
 - [Pull request jobs](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-pull-request.yml)
