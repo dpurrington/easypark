@@ -1,48 +1,75 @@
 ![build status](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-merge.yml/badge.svg)
 
-# Getting Started with Create React App
+- [Production Application](https://easypark-5e3b6.web.app/)
+- [Production CD jobs](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-merge.yml)
+- [Pull request jobs](https://github.com/dpurrington/easypark/actions/workflows/firebase-hosting-pull-request.yml)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Approach
 
-## Available Scripts
+## Infrastructure as Code
 
-In the project directory, you can run:
+_See also: [Infrastructure as Code](https://en.wikipedia.org/wiki/Infrastructure_as_code) and [continuous delivery](https://continuousdelivery.com/)_
 
-### `npm start`
+This project uses [Firebase CLI](https://firebase.google.com/docs/cli) for CI/CD, which would enables repeatable and testable infrastructure. Much of the infrastructure configuration and choices for Firebase use configuration files in the project. This makes it easy to move infra changes through the PR process (code review, test deployments, etc).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The Firebase CLI has scaffolding to setup [Github Actions](https://github.com/features/actions) scripts, which makes PR and branch merch CI/CD really simple. It also takes care of setting up permission grants between Github and Google.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Dev tools
 
-### `npm test`
+Much of this comes from [create-react-app](https://create-react-app.dev/).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Linter -- [eslint](https://eslint.org/), with the rules that come out of the box with CRA. A linter is really important with dynamic languages because it keeps things looking consistent, and it also helps coach people out of approaches that don't work well, or are not idiomatic.
+- Typescript -- this was a requirement.
+- Packaging -- babel and webpack
+- VSCode
+- React Developer Tools browser extension
+- Firefox Developer Tools
+- Node Version Manager
 
-### `npm run build`
+# Design and Implementation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Third party libraries
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+_[UUID](https://github.com/uuidjs/uuid) for session ids, so React can deal properly with updates.
+_[Firebase SDK](https://firebase.google.com/docs/firestore/client/libraries) -- for interactions with the Realtime Database.
+_[react-router](https://reactrouter.com/en/main) -- for routing within the SPA
+_[Material UI](https://mui.com/) -- providing controls (especially the [DataGrid](https://mui.com/x/react-data-grid/))
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Code organization
 
-### `npm run eject`
+Much of the layout is prescribed by `create-react-app`.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Configuration -- _root_ directory
+- Application code -- `src` directory
+  - [`./src/`](./src) -- core React application code
+  - [`src/routes`](./src/routes) -- route controllers
+  - [`src/data`](./src/data) -- data store interactions and data object creation
+  - [`src/components`](./src/components) -- React components
+- Static files (e.g., `favicon.ico`) -- [`pub`](./pub) directory
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Various implementation choices
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Using the Snackbar component from MUI for the notices on write actions.
+- Using the observer pattern with the SessionsList component to receive updates as they happen.
+- Using the BottomNavigation component from MUI
+- Using the DataGrid component from MUI for displaying the list of sessions, and enabling export.
+- There's really only one domain object at this point (Sessions) and I put it into the data folder. At some point it may make sense to introduce a domain model separate from the data access code. At this point, it would be a lot of extra code (factories, repos, etc.) without value, I think.
+- There are "open secrets" in the `firebase.js` file. They're really not secrets, but more configuration values. Moreover, anything ending up on the client side can be reverse engineered anyway. The protections need to come from elsewhere (Firebase security rules and authentication).
+- There is a requirement that the dates be sensible, that the end date does not come before the start date. I also needed to make sure that any client clock skew didn't affect the data quality. And there is the requirement for "dont' make me think." There's really no reason for the user to be entering dates anyway. I use the `serverTimestamp` for both date values, which ensures their semantic correctness, their accuracy, and the usability need.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# CI/CD
 
-## Learn More
+The project is using Github Actions for CI/CD (scripts are in [`./.github/workflows`](./.github/workflows)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Pull requests are validated and deployed to non-production environments. However, they still use the production datastore.
+- Merges to the `main` branch are automatically deployed to [the production URL](https://easypark-5e3b6.web.app/).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Things Left to Do
+
+1. **Protection of the data store from malicious actors.** There is nothing to prevent a malicious actor from injecting invalid or malicious data into the data store. A backend REST write service, along with proper security rules, would address this vulnerability.
+1. **Feature segmentation & access to sensitive data** Average users shouldn't be able to see everyone's sessions. This can be addressed through authentication (via Google) and authorization (through data security rules).
+1. **Protection from race conditions** -- the write operations should use transactions to ensure data doesn't change out from under them.
+1. **Test automation** To get our delivery speed to a good place, and to ensure quality remains high (DORA metrics), we need to automate as much of our testing as possible.
+1. **Validation of data objects** -- It was suggested in the assignment that it might be good to validate the data objects. Validators such as [class-validator](https://github.com/typestack/class-validator) and [joi](https://joi.dev/) allow you to validate json input, and are most useful when protecting the application from data introduced externally, where we do not control the input. The cost of these validators is that you need to write schema files (or use class attributes, but that means you have to have classes) to describe the data rules. In our application here, all the data objects are created by our code, and so we can ensure they are always correct through our test automation.
+1. **UI Polish** -- The UI is functional but needs polish through styling. I'm sure I've done some things that are better done via CSS.
+1. **Indexes** -- The datastore will likely need indexes for queries. We should load test the application to see how it behaves when there is a significant amount of data in the `sessions` collection.
