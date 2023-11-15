@@ -19,7 +19,7 @@ The Firebase CLI has scaffolding to setup [Github Actions](https://github.com/fe
 Much of this comes from [create-react-app](https://create-react-app.dev/).
 
 - Linter -- [eslint](https://eslint.org/), with the rules that come out of the box with CRA. A linter is really important with dynamic languages because it keeps things looking consistent, and it also helps coach people out of approaches that don't work well, or are not idiomatic.
-- Typescript -- this was a requirement.
+- Typescript
 - Packaging -- babel and webpack
 - VSCode
 - React Developer Tools browser extension
@@ -30,10 +30,10 @@ Much of this comes from [create-react-app](https://create-react-app.dev/).
 
 ## Third party libraries
 
-_[UUID](https://github.com/uuidjs/uuid) for session ids, so React can deal properly with updates.
-_[Firebase SDK](https://firebase.google.com/docs/firestore/client/libraries) -- for interactions with the Realtime Database.
-_[react-router](https://reactrouter.com/en/main) -- for routing within the SPA
-_[Material UI](https://mui.com/) -- providing controls (especially the [DataGrid](https://mui.com/x/react-data-grid/))
+- [UUID](https://github.com/uuidjs/uuid) for session ids, so React can deal properly with updates.
+- [Firebase SDK](https://firebase.google.com/docs/firestore/client/libraries) -- for interactions with the Realtime Database.
+- [react-router](https://reactrouter.com/en/main) -- for routing within the SPA
+- [Material UI](https://mui.com/) -- providing controls (especially the [DataGrid](https://mui.com/x/react-data-grid/))
 
 ## Code organization
 
